@@ -10,27 +10,27 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: d840c56e97a91624081210a94532f814, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.022227043
+      value: 0.011814562
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d840c56e97a91624081210a94532f814, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.022227043
+      value: 0.011814562
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d840c56e97a91624081210a94532f814, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.022227043
+      value: 0.011814562
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d840c56e97a91624081210a94532f814, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.50041
+      value: -1.49175
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d840c56e97a91624081210a94532f814, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.7260557
+      value: 0.020910025
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d840c56e97a91624081210a94532f814, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6.5690136
+      value: 2.98309
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d840c56e97a91624081210a94532f814, type: 3}
       propertyPath: m_LocalRotation.w
@@ -71,5 +71,97 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d840c56e97a91624081210a94532f814, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8263562855002726408}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d840c56e97a91624081210a94532f814, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9142654066940366450}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d840c56e97a91624081210a94532f814, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2232646710335097645}
   m_SourcePrefab: {fileID: 100100000, guid: d840c56e97a91624081210a94532f814, type: 3}
+--- !u!1 &512122958325140456 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d840c56e97a91624081210a94532f814, type: 3}
+  m_PrefabInstance: {fileID: 854000370207684281}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &8263562855002726408
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512122958325140456}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5962186
+  m_Height: 3.3353302
+  m_Direction: 0
+  m_Center: {x: -0.17855823, y: -0.15081292, z: 0.002663374}
+--- !u!54 &9142654066940366450
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512122958325140456}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &2232646710335097645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512122958325140456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8907d2a837347e647b72ae785f1acb79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentState: 0
+  wanderSpeed: 0.5
+  approachSpeed: 1
+  agitatedSpeed: 2
+  rotationSpeed: 2
+  wanderRadius: 3
+  wanderAnchor: {fileID: 0}
+  minWanderTargetDistance: 0.1
+  landingApproachHeight: 0.1
+  landingDistanceThreshold: 0.02
+  playerHandTag: PlayerHand
+  swatVelocityThreshold: 1.5
+  agitatedDuration: 5
+  postAgitationCooldown: 10
+  landAttemptCooldown: 5
+  handLandingSpotName: BeeLandingSpot
