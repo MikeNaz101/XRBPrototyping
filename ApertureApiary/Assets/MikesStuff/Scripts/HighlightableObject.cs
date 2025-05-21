@@ -20,53 +20,39 @@ public class HighlightableObject : MonoBehaviour
 
     void Awake()
     {
-        // Initial setup for highlight visual
         if (highlightVisual != null)
         {
-            highlightVisual.SetActive(false); // Start with highlight off
+            highlightVisual.SetActive(false);
         }
-
-        // Initial setup for emissive material
         if (objectRenderer != null && objectRenderer.material.HasProperty(EmissionColorShaderProperty))
         {
-            // Ensure the material is set to use emission
             objectRenderer.material.EnableKeyword("_EMISSION");
             _originalEmissionColor = objectRenderer.material.GetColor(EmissionColorShaderProperty);
             _isEmissiveMaterial = true;
         }
     }
 
-    /// <summary>
-    /// Activates the highlight effect.
-    /// </summary>
     public void Highlight()
     {
         if (highlightVisual != null)
         {
             highlightVisual.SetActive(true);
         }
-
         if (_isEmissiveMaterial && objectRenderer != null)
         {
             objectRenderer.material.SetColor(EmissionColorShaderProperty, highlightEmissionColor);
         }
-        // Debug.Log(gameObject.name + " Highlighted");
     }
 
-    /// <summary>
-    /// Deactivates the highlight effect.
-    /// </summary>
     public void Unhighlight()
     {
         if (highlightVisual != null)
         {
             highlightVisual.SetActive(false);
         }
-
         if (_isEmissiveMaterial && objectRenderer != null)
         {
             objectRenderer.material.SetColor(EmissionColorShaderProperty, _originalEmissionColor);
         }
-        // Debug.Log(gameObject.name + " Unhighlighted");
     }
 }

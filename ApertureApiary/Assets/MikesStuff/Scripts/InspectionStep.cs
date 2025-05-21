@@ -1,13 +1,23 @@
+// File: InspectionStep.cs (Conceptually part of HiveInspectionGuideManager or could be separate)
+// Purpose: Defines the data structure for each step in the hive inspection.
+// Instructions: This script doesn't need to be attached to any GameObject.
+// It's used by HiveInspectionGuideManager.
+
 using UnityEngine;
 using UnityEngine.Events; // Required for UnityEvent
+using TMPro; // Required if you directly reference TMP_Text in the step, though manager control is better
 
 [System.Serializable] // Makes this class show up in the Inspector when used in an array
 public class InspectionStep
 {
     [Header("Step Configuration")]
-    [Tooltip("The instruction text to display to the user for this step.")]
-    [TextArea(3, 10)] // Makes the string field larger in the Inspector
+    [Tooltip("The main instruction text to display to the user for this step.")]
+    [TextArea(3, 5)]
     public string instructionText = "Default instruction for this step.";
+
+    [Tooltip("Detailed informational text related to this step. Displayed in a separate UI element.")]
+    [TextArea(5, 15)] // Larger area for more text
+    public string detailedInformationText = ""; // New field for informational text
 
     [Tooltip("The HighlightableObject that should be visually emphasized for this step. Can be null.")]
     public HighlightableObject objectToHighlight;

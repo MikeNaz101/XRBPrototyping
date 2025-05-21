@@ -16,8 +16,7 @@ public class InteractionEventRelay : MonoBehaviour
     {
         if (guideManager == null)
         {
-            // Try to find it if not assigned, good for dynamic setups but assignment is safer.
-            guideManager = FindObjectOfType<HiveInspectionGuideManager>();
+            guideManager = FindFirstObjectByType<HiveInspectionGuideManager>();
             if (guideManager == null)
             {
                 Debug.LogError("InteractionEventRelay: HiveInspectionGuideManager not found in scene and not assigned!", this);
@@ -26,15 +25,10 @@ public class InteractionEventRelay : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// This public method should be called by the UnityEvent of your XR interactable component
-    /// (e.g., OnSelectEntered, OnActivated, Meta's OnGrab, etc.).
-    /// </summary>
     public void NotifyInteraction()
     {
         if (guideManager != null)
         {
-            // Pass 'this.gameObject' to let the manager know WHICH object was interacted with.
             guideManager.ProcessInteraction(this.gameObject);
         }
         else
