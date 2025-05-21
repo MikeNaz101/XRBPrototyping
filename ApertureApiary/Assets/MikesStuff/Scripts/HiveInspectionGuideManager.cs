@@ -146,7 +146,7 @@ public class HiveInspectionGuideManager : MonoBehaviour
     /// <summary>
     /// Completes the current step and moves to the next one.
     /// </summary>
-    private void AdvanceToNextStep()
+    public void AdvanceToNextStep()
     {
         // Stop any ongoing auto-advance coroutine from the previous step
         if (_autoAdvanceCoroutine != null)
@@ -158,7 +158,7 @@ public class HiveInspectionGuideManager : MonoBehaviour
         // Trigger OnStepComplete for the step we are leaving (if it was a valid step)
         if (_currentStepIndex >= 0 && _currentStepIndex < inspectionSteps.Length)
         {
-            inspectionSteps[_currentStepIndex].onStepComplete?.Invoke();
+            //inspectionSteps[_currentStepIndex].onStepComplete?.Invoke();
             // Unhighlight the object from the completed step if it's not the same as the next step's highlight
             if(inspectionSteps[_currentStepIndex].objectToHighlight != null)
             {

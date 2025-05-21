@@ -1,0 +1,28 @@
+{
+    "utterances": [
+        {
+            "text": "Go to the next step",
+            "entities": [],
+            "traits": [],
+            "intent": "progresses_instructional_manager"
+        },
+        {
+            "text": "Next",
+            "entities": [],
+            "traits": [],
+            "intent": "progresses_instructional_manager"
+        },
+        {
+            "text": "Next step",
+            "entities": [],
+            "traits": [],
+            "intent": "progresses_instructional_manager"
+        },
+        {
+            "text": "Show me the next step",
+            "entities": [],
+            "traits": [],
+            "intent": "progresses_instructional_manager"
+        }
+    ]
+}

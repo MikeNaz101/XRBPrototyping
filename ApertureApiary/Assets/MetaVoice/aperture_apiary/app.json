@@ -1,0 +1,7 @@
+{
+    "version": 20200513,
+    "zip-command": "zip aperture_apiary.zip aperture_apiary\/app.json aperture_apiary\/entities\/*.json aperture_apiary\/intents\/*.json aperture_apiary\/traits\/*.json aperture_apiary\/utterances\/*.json aperture_apiary\/composer\/*.json",
+    "name": "aperture_apiary",
+    "lang": "en",
+    "timezone": "America\/Los_Angeles"
+}
