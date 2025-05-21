@@ -8161,7 +8161,7 @@ Transform:
   m_GameObject: {fileID: 700423337}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.012, y: 0, z: 1.95}
+  m_LocalPosition: {x: 0.012, y: 0, z: 1.329}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12094,8 +12094,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ovrCameraRig: {fileID: 700423340}
-  _leftHand: {fileID: 0}
-  _rightHand: {fileID: 0}
+  _leftHand: {fileID: 1136314354}
+  _rightHand: {fileID: 1503268680}
   _requireOvrHands: 1
 --- !u!114 &1020889812
 MonoBehaviour:
