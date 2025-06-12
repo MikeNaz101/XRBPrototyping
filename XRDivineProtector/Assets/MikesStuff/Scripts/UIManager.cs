@@ -9,7 +9,7 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance { get; private set; }
 
     [Header("UI Configuration")]
-    public float menuHeightOffset = 0.75f;
+    public float menuHeightOffset = 1.25f;
 
     [Header("Canvas & Button Prefabs")]
     public GameObject spawnSelectionCanvasPrefab;
@@ -86,9 +86,11 @@ public class UIManager : MonoBehaviour
                 SpawnableItemData currentItemData = itemData;
                 buttonComponent.onClick.AddListener(() => {
                     if (playerHexSpawnerReference != null && activeHexForSpawning != null) {
-                        playerHexSpawnerReference.RequestSpawnOnHex(activeHexForSpawning, currentItemData.itemPrefab);
+                        // --- CHANGE THIS LINE ---
+                        // Pass the whole itemData object, not just the prefab
+                        playerHexSpawnerReference.RequestSpawnOnHex(activeHexForSpawning, currentItemData);
                     }
-                    // RequestSpawnOnHex will call CloseAllMenus itself
+                    CloseAllMenus();
                 });
             }
         }

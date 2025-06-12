@@ -1,132 +1,155 @@
 // PlayerHexSpawner.cs
 using UnityEngine;
 using System.Collections.Generic;
-using Oculus.Interaction; // Still required for RayInteractor, assuming it's part of the setup
-using UnityEngine.EventSystems; // Required for Unity's PhysicsRaycaster
+using Oculus.Interaction;
+using UnityEngine.EventSystems;
 
-[RequireComponent(typeof(RayInteractor), typeof(PhysicsRaycaster))] // Ensure both components are present
+[RequireComponent(typeof(RayInteractor), typeof(PhysicsRaycaster))]
 public class PlayerHexSpawner : MonoBehaviour
 {
     [Header("Spawning Configuration")]
     public List<SpawnableItemData> availableItemsToSpawn;
 
     [Header("Interaction Layers")]
-    public LayerMask worldInteractionMask; // Assign your 'HexGridInteractive' layer here
-    public LayerMask uiInteractionMask;    // Assign your 'UI' layer here
+    public LayerMask worldInteractionMask;
+    public LayerMask uiInteractionMask;
+    
+    // Public property for the currently hovered hex
+    public HexCell CurrentlyHoveredHex { get; private set; }
 
-    // --- UPDATED ---
-    private PhysicsRaycaster _physicsRaycaster; // Reference to Unity's standard PhysicsRaycaster
+    private PhysicsRaycaster _physicsRaycaster;
+    private HexCell _lastHoveredHex;
 
     void Awake()
     {
-        // Get the standard PhysicsRaycaster component on this same GameObject
         _physicsRaycaster = GetComponent<PhysicsRaycaster>();
-        if (_physicsRaycaster == null)
-        {
-            Debug.LogError("PlayerHexSpawner requires a UnityEngine.EventSystems.PhysicsRaycaster component on the same GameObject.", this);
-        }
     }
 
     void Start()
     {
-        if (UIManager.Instance == null)
+        if (UIManager.Instance != null)
         {
-            Debug.LogError("UIManager not found in the scene. PlayerHexSpawner needs it to function.");
-            return;
+            UIManager.Instance.availableUnitsToSpawn = this.availableItemsToSpawn;
+            UIManager.Instance.playerHexSpawnerReference = this;
         }
-        // Pass necessary references to UIManager
-        UIManager.Instance.availableUnitsToSpawn = this.availableItemsToSpawn;
-        UIManager.Instance.playerHexSpawnerReference = this;
-
-        if (availableItemsToSpawn == null || availableItemsToSpawn.Count == 0)
-        {
-            Debug.LogWarning("PlayerHexSpawner: No 'Available Items To Spawn' configured.");
-        }
-
-        // Start by allowing interaction with the world (hex grid)
         EnableWorldInteraction();
+    }
+    
+    void Update()
+    {
+        UpdateHoveredHex();
+    }
+
+    void UpdateHoveredHex()
+    {
+        // This raycast is just to determine the currently hovered hex for visual feedback
+        Ray ray = new Ray(transform.position, transform.forward);
+        RaycastHit hit;
+
+        HexCell newlyHoveredHex = null;
+        if (_physicsRaycaster.eventMask == worldInteractionMask && Physics.Raycast(ray, out hit, 100f, worldInteractionMask))
+        {
+            newlyHoveredHex = hit.collider.GetComponent<HexCell>();
+        }
+        
+        CurrentlyHoveredHex = newlyHoveredHex;
+
+        if (CurrentlyHoveredHex != _lastHoveredHex)
+        {
+            _lastHoveredHex?.OnPointerExit();
+            CurrentlyHoveredHex?.OnPointerEnter();
+            _lastHoveredHex = CurrentlyHoveredHex;
+        }
     }
 
     // This public method is called by your Ray Interactor system when a hex cell is selected.
     public void HandleHexSelection(GameObject selectedHexObject)
     {
-        // --- UPDATED ---
-        // Only handle selection if the raycaster is currently set to interact with the world
-        if (_physicsRaycaster != null && _physicsRaycaster.eventMask != worldInteractionMask)
-        {
-            return;
-        }
-
-        if (UIManager.Instance == null) return;
+        if (_physicsRaycaster.eventMask != worldInteractionMask) return;
 
         HexCell selectedCell = selectedHexObject.GetComponent<HexCell>();
-        if (selectedCell == null)
-        {
-            Debug.LogError("Selected object is not a HexCell!", selectedHexObject);
-            return;
-        }
+        if(selectedCell == null) return;
 
-        if (selectedCell.IsOccupied)
-        {
-            if (selectedCell.SpawnedObject != null)
-            {
-                UIManager.Instance.DisplayObjectActionsMenu(selectedCell.SpawnedObject, selectedCell.transform);
-            }
+        if (selectedCell.IsOccupied) 
+        { 
+            UIManager.Instance.DisplayObjectActionsMenu(selectedCell.SpawnedObject, selectedCell.transform); 
         }
-        else
-        {
-            UIManager.Instance.DisplaySpawnSelectionMenu(selectedCell, selectedCell.transform);
+        else 
+        { 
+            UIManager.Instance.DisplaySpawnSelectionMenu(selectedCell, selectedCell.transform); 
         }
     }
 
-    // This method is called by a UI button from the SpawnSelectionCanvas
-    public void RequestSpawnOnHex(HexCell targetHex, GameObject itemPrefabToSpawn)
+    public void RequestSpawnOnHex(HexCell targetHex, SpawnableItemData itemData)
     {
-        if (itemPrefabToSpawn == null)
+        if (itemData == null || itemData.itemPrefab == null || targetHex == null)
         {
-            Debug.LogError("PlayerHexSpawner: Item Prefab to Spawn is null in request!");
-            return;
-        }
-        if (targetHex == null)
-        {
-            Debug.LogError("PlayerHexSpawner: Target Hex is null in request!");
+            Debug.LogError("Invalid data provided for spawning request.");
             return;
         }
 
-        GameObject spawnedInstance = Instantiate(itemPrefabToSpawn, targetHex.transform);
-        spawnedInstance.transform.localPosition = new Vector3(0f, 0.00444f, 0f);
-        spawnedInstance.transform.localScale = Vector3.one * 0.000508f;
+        Vector3 spawnPosition;
+        Quaternion spawnRotation = targetHex.transform.rotation; // Start with the hex's default flat rotation
 
-        if (targetHex.TryOccupy(spawnedInstance))
+        if (itemData.isWall)
         {
-            Debug.Log($"Successfully spawned '{itemPrefabToSpawn.name}' on hex {targetHex.name}.");
+            // Use special position for walls
+            spawnPosition = targetHex.WorldCenter + new Vector3(0, 0.05f, 0);
+
+            // --- Auto-Orientation Logic for Walls ---
+            HexCell neighborWithWall = null;
+            foreach (HexCell neighbor in targetHex.Neighbors)
+            {
+                // We need a way to identify walls. Let's assume a "Wall" tag or a component.
+                if (neighbor.IsOccupied && neighbor.SpawnedObject.CompareTag("Wall")) 
+                {
+                    neighborWithWall = neighbor;
+                    break; // Connect to the first found wall
+                }
+            }
+
+            if (neighborWithWall != null)
+            {
+                // Auto-orient to connect to the neighbor wall
+                Vector3 directionToNeighbor = (neighborWithWall.WorldCenter - targetHex.WorldCenter).normalized;
+                // Look towards the neighbor, keeping the 'up' vector aligned with the hex's 'up'
+                spawnRotation = Quaternion.LookRotation(directionToNeighbor, targetHex.transform.up);
+            }
+            // If no neighbor wall is found, it will just use the default spawnRotation.
         }
-        else
+        else // For all other non-wall objects
         {
-            Debug.LogWarning($"Failed to occupy hex {targetHex.name} after spawning {itemPrefabToSpawn.name}. Destroying instance.");
+            spawnPosition = targetHex.WorldCenter + new Vector3(0, 0.04594f, 0);
+        }
+
+        // --- Spawn the final object ---
+        GameObject spawnedInstance = Instantiate(itemData.itemPrefab, spawnPosition, spawnRotation);
+        
+        // --- UPDATED ---
+        // Apply scaling ONLY to objects that are NOT walls.
+        if (!itemData.isWall)
+        {
+            spawnedInstance.transform.localScale = Vector3.one * 1f;
+        }
+        // If it is a wall, its scale will remain the same as the prefab's scale.
+        
+        if (!targetHex.TryOccupy(spawnedInstance))
+        {
+            Debug.LogWarning($"Failed to occupy hex {targetHex.name}. Destroying instance.");
             Destroy(spawnedInstance);
         }
-        UIManager.Instance.CloseAllMenus();
-    }
 
-    // Public methods for UIManager to call
+        UIManager.Instance.CloseAllMenus(); // Close spawn menu after action is complete
+    }
+    
+    // The following interaction state methods are still needed by the UIManager
     public void EnableUIInteraction()
     {
-        // --- UPDATED ---
-        if (_physicsRaycaster != null)
-        {
-            Debug.Log("Switching Raycaster to UI interaction.");
-            _physicsRaycaster.eventMask = uiInteractionMask;
-        }
+        if (_physicsRaycaster != null) _physicsRaycaster.eventMask = uiInteractionMask;
     }
 
     public void EnableWorldInteraction()
     {
-        // --- UPDATED ---
-        if (_physicsRaycaster != null)
-        {
-            Debug.Log("Switching Raycaster to World interaction.");
-            _physicsRaycaster.eventMask = worldInteractionMask;
-        }
+        if (_physicsRaycaster != null) _physicsRaycaster.eventMask = worldInteractionMask;
     }
 }
